@@ -1,4 +1,4 @@
-# clipper: turn podcasts and interviews into post-ready clips with Claude Code
+# clipper: turn podcasts and interviews into post-ready clips by just posting a link
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-ff6a3d.svg)](LICENSE)
 [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-8a879c.svg)](https://code.claude.com/docs/en/skills)

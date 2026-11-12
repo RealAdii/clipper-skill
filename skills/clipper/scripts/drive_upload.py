@@ -11,8 +11,8 @@ w = work(sys.argv)
 p = plan(w)
 tok = token()
 lp = os.path.join(w, "links.json")
-links = json.load(open(lp)) if os.path.exists(lp) else {}
-save = lambda: json.dump(links, open(lp, "w"), indent=1)
+links = json.load(open(lp, encoding="utf-8")) if os.path.exists(lp) else {}
+save = lambda: json.dump(links, open(lp, "w", encoding="utf-8"), indent=1)
 
 
 def upload(path, name, folder_id):

@@ -9,7 +9,7 @@ w = work(sys.argv)
 p = plan(w)
 dry = "--no-upload" in sys.argv
 lp = os.path.join(w, "links.json")
-links = json.load(open(lp)) if os.path.exists(lp) else {}
+links = json.load(open(lp, encoding="utf-8")) if os.path.exists(lp) else {}
 if not dry and "folder_id" not in links:
     sys.exit("no Drive folder yet, run drive_upload.py first")
 
@@ -50,7 +50,7 @@ for i, c in enumerate(p["clips"], 1):
     parts.append(link(c["name"], f"watch clip {i}"))
 body = "<html><head><meta charset=\"utf-8\"></head><body>" + "".join(parts) + "</body></html>"
 no_dashes(body, "doc.html")
-open(os.path.join(w, "doc.html"), "w").write(body)
+open(os.path.join(w, "doc.html"), "w", encoding="utf-8").write(body)
 print("wrote", os.path.join(w, "doc.html"))
 if dry:
     sys.exit(0)
@@ -70,5 +70,5 @@ f = call(tok, "POST", "https://www.googleapis.com/upload/drive/v3/files?uploadTy
          payload, {"Content-Type": f"multipart/related; boundary={B}"})
 share_anyone(tok, f["id"])
 links.update(doc=f["webViewLink"], doc_id=f["id"])
-json.dump(links, open(lp, "w"), indent=1)
+json.dump(links, open(lp, "w", encoding="utf-8"), indent=1)
 print("doc:", f["webViewLink"])

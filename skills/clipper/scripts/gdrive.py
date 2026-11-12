@@ -1,11 +1,11 @@
-import json, subprocess, sys, urllib.error, urllib.parse, urllib.request
+import json, shutil, subprocess, sys, urllib.error, urllib.parse, urllib.request
 
 FIX = "run:  ! gcloud auth login --enable-gdrive-access   (then rerun this script)"
 
 
 def token():
     try:
-        t = subprocess.check_output(["gcloud", "auth", "print-access-token"], text=True,
+        t = subprocess.check_output([shutil.which("gcloud") or "gcloud", "auth", "print-access-token"], text=True,
                                     stderr=subprocess.DEVNULL).strip()
     except (subprocess.CalledProcessError, FileNotFoundError):
         sys.exit("no gcloud login. " + FIX)

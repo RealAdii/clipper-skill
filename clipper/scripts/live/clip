@@ -1,0 +1,27 @@
+#!/bin/zsh
+# Cut the last N seconds of the live buffer (optionally ending E seconds ago),
+# export an X-ready mp4, a still frame, and a transcript.
+# usage: clip [seconds=60] [end_offset=0]
+N=${1:-60}; E=${2:-0}
+BUF=~/liveclip/buf; OUT=~/liveclip/clips
+segs=($BUF/*.ts(Nom))   # newest first
+[ ${#segs} -eq 0 ] && { echo "no buffer: is liveclip running?"; exit 1; }
+K=$(( (N + E) / 10 + 3 )); [ $K -gt ${#segs} ] && K=${#segs}
+list=(${(Oa)segs[1,$K]})   # oldest first
+stamp=$(date +%H%M%S); base=$OUT/clip_$stamp
+ffmpeg -hide_banner -loglevel error -y -i "concat:${(j:|:)list}" -c copy $base.raw.ts
+ffmpeg -hide_banner -loglevel error -y -sseof -$((N + E)) -i $base.raw.ts -t $N \
+  -c:v libx264 -preset fast -crf 17 -pix_fmt yuv420p -c:a aac -b:a 160k \
+  -movflags +faststart $base.mp4
+rm -f $base.raw.ts
+ffmpeg -hide_banner -loglevel error -y -sseof -$((N / 2)) -i $base.mp4 -frames:v 1 -vf scale=960:-2 $base.jpg
+~/liveclip/.venv/bin/python - "$base" <<'PY'
+import sys, mlx_whisper
+b = sys.argv[1]
+r = mlx_whisper.transcribe(b + ".mp4", path_or_hf_repo="mlx-community/whisper-large-v3-turbo", language="en")
+lines = [f"[{s['start']:5.1f}] {s['text'].strip()}" for s in r["segments"] if s["text"].strip()]
+open(b + ".txt", "w").write("\n".join(lines) + "\n")
+print("\n".join(lines))
+PY
+echo; echo "video: $base.mp4"; echo "frame: $base.jpg"; echo "text:  $base.txt"
+open -R $base.mp4

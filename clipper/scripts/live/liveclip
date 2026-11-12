@@ -1,0 +1,12 @@
+#!/bin/zsh
+# Record an X live broadcast into a rolling 30 min buffer of 10s chunks.
+# usage: liveclip <x.com broadcast or post url>   (LIVECLIP_COOKIES=chrome if X wants login)
+URL="$1"; [ -z "$URL" ] && { echo "usage: liveclip <url>"; exit 1; }
+BUF=~/liveclip/buf
+rm -f $BUF/*.ts(N)
+echo "$URL" > ~/liveclip/current_url
+COOK=(); [ -n "$LIVECLIP_COOKIES" ] && COOK=(--cookies-from-browser "$LIVECLIP_COOKIES")
+echo "recording $URL  (ctrl-c to stop, buffer keeps last 20 min)"
+yt-dlp -q --no-warnings $COOK -f "best" -o - "$URL" \
+  | ffmpeg -hide_banner -loglevel error -i pipe:0 -map '0:v:0?' -map '0:a:0?' -c copy \
+      -f segment -segment_time 10 -segment_wrap 120 -reset_timestamps 1 "$BUF/seg%03d.ts"

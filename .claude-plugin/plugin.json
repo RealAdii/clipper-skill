@@ -1,0 +1,10 @@
+{
+  "name": "clipper",
+  "version": "1.0.0",
+  "description": "Turn a podcast, interview or X broadcast into a pack of post-ready short clips. Local MLX Whisper transcript, Claude picks the moments, ffmpeg cuts on word boundaries, every cut QA-checked, then Desktop folder, Google Drive links and a Google Doc of captions.",
+  "author": { "name": "Adithya Dinesh", "url": "https://github.com/RealAdii" },
+  "homepage": "https://github.com/RealAdii/clipper-skill",
+  "repository": "https://github.com/RealAdii/clipper-skill",
+  "license": "MIT",
+  "keywords": ["clips", "podcast", "video-clipping", "whisper", "mlx", "ffmpeg", "yt-dlp", "content-repurposing", "short-form-video"]
+}

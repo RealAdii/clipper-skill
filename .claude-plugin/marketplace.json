@@ -1,0 +1,14 @@
+{
+  "name": "clipper-skill",
+  "description": "Clipper: podcast and interview to post-ready clip packs, as a Claude Code skill",
+  "owner": { "name": "Adithya Dinesh", "url": "https://github.com/RealAdii" },
+  "plugins": [
+    {
+      "name": "clipper",
+      "source": "./",
+      "description": "Turn a podcast, interview or X broadcast into a pack of post-ready short clips with captions, QA-checked cuts, Drive links and a Google Doc.",
+      "version": "1.0.0",
+      "category": "productivity"
+    }
+  ]
+}

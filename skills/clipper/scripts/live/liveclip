@@ -1,8 +1,8 @@
 #!/bin/zsh
-# Record an X live broadcast into a rolling 30 min buffer of 10s chunks.
+# Record an X live broadcast into a rolling 20 min buffer of 10s chunks.
 # usage: liveclip <x.com broadcast or post url>   (LIVECLIP_COOKIES=chrome if X wants login)
 URL="$1"; [ -z "$URL" ] && { echo "usage: liveclip <url>"; exit 1; }
-BUF=~/liveclip/buf
+BUF=~/liveclip/buf; mkdir -p $BUF
 rm -f $BUF/*.ts(N)
 echo "$URL" > ~/liveclip/current_url
 COOK=(); [ -n "$LIVECLIP_COOKIES" ] && COOK=(--cookies-from-browser "$LIVECLIP_COOKIES")

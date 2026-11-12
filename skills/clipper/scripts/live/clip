@@ -3,7 +3,8 @@
 # export an X-ready mp4, a still frame, and a transcript.
 # usage: clip [seconds=60] [end_offset=0]
 N=${1:-60}; E=${2:-0}
-BUF=~/liveclip/buf; OUT=~/liveclip/clips
+BUF=~/liveclip/buf; OUT=~/liveclip/clips; mkdir -p $OUT
+PY=$(${0:A:h}/../setup.sh) || exit 1
 segs=($BUF/*.ts(Nom))   # newest first
 [ ${#segs} -eq 0 ] && { echo "no buffer: is liveclip running?"; exit 1; }
 K=$(( (N + E) / 10 + 3 )); [ $K -gt ${#segs} ] && K=${#segs}
@@ -15,7 +16,7 @@ ffmpeg -hide_banner -loglevel error -y -sseof -$((N + E)) -i $base.raw.ts -t $N 
   -movflags +faststart $base.mp4
 rm -f $base.raw.ts
 ffmpeg -hide_banner -loglevel error -y -sseof -$((N / 2)) -i $base.mp4 -frames:v 1 -vf scale=960:-2 $base.jpg
-~/liveclip/.venv/bin/python - "$base" <<'PY'
+$PY - "$base" <<'PY'
 import sys, mlx_whisper
 b = sys.argv[1]
 r = mlx_whisper.transcribe(b + ".mp4", path_or_hf_repo="mlx-community/whisper-large-v3-turbo", language="en")

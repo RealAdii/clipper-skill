@@ -1,11 +1,11 @@
 ---
 name: clipper
-description: Turn a long interview, podcast, panel or X broadcast (Eli Ben-Sasson style) into a pack of topical, post-ready clips. Downloads the source (X, YouTube, any yt-dlp link, or a local file), transcribes it with MLX Whisper, picks the strongest moments, cuts clean clips on word boundaries, QA-checks every cut, packages everything into a folder (plus zip) on the Desktop, uploads the videos to Google Drive with public links, and builds a shareable Google Doc with captions, timestamps and a link for every clip. Use when the user says "clip this", "make clips from this interview", "cut eli's podcast into clips", "the clipping thing", "clip it and put it on drive", "make the clips doc", or pastes a video link or file and wants clips.
+description: Turn a long podcast, interview, panel, livestream or X broadcast into a pack of topical, post-ready short clips, like an AI clipping SaaS but running on your own Mac with no per-minute fees. Downloads the source (X, YouTube, any yt-dlp link, or a local file), transcribes it on-device with MLX Whisper, picks the strongest moments, cuts clean clips on word boundaries, QA-checks every cut, packages everything into a folder (plus zip) on the Desktop, uploads the videos to Google Drive with public links, and builds a shareable Google Doc with captions, timestamps and a link for every clip. Use when the user says "clip this", "make clips from this interview", "turn this podcast into shorts", "cut eli's podcast into clips", "the clipping thing", "clip it and put it on drive", "make the clips doc", or pastes a video link or file and wants clips.
 ---
 
 # clipper
 
-The full pipeline we ran for Eli's The Block interview (Oct 26) and the "What If Bitcoin Can't Survive Quantum?" episode (Nov 3), as one repeatable flow.
+Long video in, post-ready clip pack out. Built for the Eli Ben-Sasson clip packs (The Block, Oct 2026, and "What If Bitcoin Can't Survive Quantum?", Nov 2026) and works on any long-form talk: podcasts, interviews, panels, Spaces and X broadcasts.
 
 ```
 source (url or file)
@@ -89,7 +89,7 @@ How to pick clips:
 - `start` / `end` are seconds in the source. `pad` adds pre-roll and tail at cut time (default 0.3 s and 0.8 s), so put the times on the words themselves.
 - `episode` is optional. Set it to cut a trimmed full episode (drops pre-show dead air via `trim_start`). Timestamps are relative to the trimmed episode. Set `"episode": null` to skip it.
 
-Caption rules (house style, non-negotiable):
+Caption rules (default house style; if the user gives their own voice or style guide, follow theirs instead, but the verbatim-quote and no-dash rules always hold):
 
 - all lowercase, casual, the user's voice. No emojis, no hashtags, no corporate framing.
 - Quotes are verbatim from the transcript (lowercased). Never invent or "clean up" a quote beyond dropping ums.
@@ -162,7 +162,6 @@ Before handing over the link, verify what a reader gets: export the doc as text 
 
 Reply with: the Desktop folder path, the zip path, the Doc link, the Drive folder link, and the clip list (name, length, one-line hook). Note anything the user should check (profanity, third-party footage rights).
 
-## Past runs (for reference)
+## Origin
 
-- `~/liveclip/theblock/`: Eli on The Block, 8 clips + full episode, Drive + Doc.
-- `~/liveclip/btcquantum/`: Eli on "What If Bitcoin Can't Survive Quantum?", 13 clips, zip to Downloads, Drive.
+Built from real clip packs of Eli Ben-Sasson (StarkWare) interviews: The Block (8 clips plus full episode) and "What If Bitcoin Can't Survive Quantum?" (13 clips). Work dirs for past runs live under `~/liveclip/<slug>/` on the machine that made them.

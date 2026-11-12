@@ -4,9 +4,9 @@
 [![Claude Code skill](https://img.shields.io/badge/Claude%20Code-skill-8a879c.svg)](https://code.claude.com/docs/en/skills)
 [![Platform: macOS Apple Silicon](https://img.shields.io/badge/macOS-Apple%20Silicon-15151c.svg)](#requirements)
 
-**Paste a podcast, interview, panel or X broadcast link. Get back a folder of clean, captioned, post-ready short clips, a Google Drive folder with public links, and a Google Doc your team can post from.**
+**Paste a podcast, interview, panel or X broadcast link (video). Get back a folder of clean, captioned, post-ready short clips, a Google Drive folder with public links, and a Google Doc your team can post from.**
 
-clipper is an open-source [Claude Code](https://code.claude.com) skill (an Agent Skill) that does the whole clipping job end to end: download, transcribe, pick the moments, cut, QA, package, share. Transcription runs on your Mac with MLX Whisper, so there are no per-minute fees and the audio never leaves your machine.
+clipper is an open-source [Claude Code](https://code.claude.com) skill (an Agent Skill) that does the whole clipping job end to end: download, transcribe, pick the moments, cut, QA, package, share. Transcription and cutting run on your Mac with MLX Whisper and ffmpeg, so there are no per-minute fees.
 
 <p align="center">
   <img src="assets/demo.svg" alt="clipper turning a podcast link into nine QA-checked clips, a Desktop folder, Drive links and a Google Doc" width="860">
@@ -81,7 +81,7 @@ The full playbook Claude follows is in [skills/clipper/SKILL.md](skills/clipper/
 ## why not an AI clipping SaaS?
 
 - **No per-minute pricing.** Transcription and cutting run locally. You only use your existing Claude Code plan.
-- **Your audio stays local.** Only the text transcript is read by Claude.
+- **Local processing.** Transcription and cutting run on your machine; nothing is uploaded until the optional Drive step, which asks first.
 - **Clean cuts.** Every boundary is checked by re-transcribing it, so clips never start mid-word or end on "and so...".
 - **Real quotes.** Captions quote the transcript verbatim. Nothing is invented or "cleaned up".
 - **Hand-off ready.** The Drive folder and Doc are built for a social or comms team to post from directly.
@@ -92,7 +92,7 @@ The full playbook Claude follows is in [skills/clipper/SKILL.md](skills/clipper/
 - macOS on Apple Silicon (MLX Whisper needs it)
 - [Claude Code](https://code.claude.com)
 - `ffmpeg` and `yt-dlp`: `brew install ffmpeg yt-dlp`
-- Python 3; `scripts/setup.sh` builds a venv with `mlx-whisper` on first run (the model is about 1.6 GB)
+- Python 3; `skills/clipper/scripts/setup.sh` builds a venv with `mlx-whisper` on first run (the model is about 1.6 GB)
 - For the Drive and Doc steps only: `gcloud auth login --enable-gdrive-access`
 
 ## faq
@@ -103,8 +103,8 @@ clipper is one. It is MIT licensed, runs the heavy work on your own Mac, and use
 **Does it work on Windows, Linux or Intel Macs?**
 Not yet. Transcription uses MLX, which is Apple Silicon only. Swapping in `faster-whisper` would make it cross-platform; PRs welcome.
 
-**Can it clip an X (Twitter) live broadcast or Space?**
-Yes. Replays (`x.com/i/broadcasts/...`) work once the stream ends. For a stream that is still live, `scripts/live/liveclip <url>` keeps a rolling 20 minute buffer and `scripts/live/clip 60` grabs the last 60 seconds.
+**Can it clip an X (Twitter) live broadcast?**
+Yes. Replays (`x.com/i/broadcasts/...`) work once the stream ends. For a stream that is still live, `skills/clipper/scripts/live/liveclip <url>` keeps a rolling 20 minute buffer and `skills/clipper/scripts/live/clip 60` grabs the last 60 seconds.
 
 **Do I need Google Drive?**
 No. Stop after the package step and you have the Desktop folder and zip. Drive and the Doc are for handing clips to a team.

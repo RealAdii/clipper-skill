@@ -5,7 +5,7 @@ description: Turn a long podcast, interview, panel, livestream or X broadcast in
 
 # clipper
 
-Long video in, post-ready clip pack out. Built for the Eli Ben-Sasson clip packs (The Block, Oct 2026, and "What If Bitcoin Can't Survive Quantum?", Nov 2026) and works on any long-form talk: podcasts, interviews, panels, Spaces and X broadcasts.
+Long video in, post-ready clip pack out. Built for the Eli Ben-Sasson clip packs (The Block, Oct 2026, and "What If Bitcoin Can't Survive Quantum?", Nov 2026) and works on any long-form talk: video podcasts, interviews, panels and X broadcasts.
 
 ```
 source (url or file)

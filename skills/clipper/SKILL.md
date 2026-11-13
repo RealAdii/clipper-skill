@@ -1,6 +1,6 @@
 ---
 name: clipper
-description: Turn a long podcast, interview, panel, livestream or X broadcast into a pack of topical, post-ready short clips, like an AI clipping SaaS but running on your own Mac with no per-minute fees. Downloads the source (X, YouTube, any yt-dlp link, or a local file), transcribes it on-device with MLX Whisper, picks the strongest moments, cuts clean clips on word boundaries, QA-checks every cut, packages everything into a folder (plus zip) on the Desktop, uploads the videos to Google Drive with public links, and builds a shareable Google Doc with captions, timestamps and a link for every clip. Use when the user says "clip this", "make clips from this interview", "turn this podcast into shorts", "cut eli's podcast into clips", "the clipping thing", "clip it and put it on drive", "make the clips doc", or pastes a video link or file and wants clips.
+description: Turn a long podcast, interview, panel, livestream or X broadcast into a pack of topical, post-ready short clips, like an AI clipping SaaS but running on your own machine (macOS, Windows or Linux) with no per-minute fees. Downloads the source (X, YouTube, any yt-dlp link, or a local file), transcribes it on-device with Whisper (MLX on Apple Silicon, faster-whisper elsewhere), picks the strongest moments, cuts clean clips on word boundaries, QA-checks every cut, packages everything into a folder (plus zip) on the Desktop, uploads the videos to Google Drive with public links, and builds a shareable Google Doc with captions, timestamps and a link for every clip. Use when the user says "clip this", "make clips from this interview", "turn this podcast into shorts", "cut eli's podcast into clips", "the clipping thing", "clip it and put it on drive", "make the clips doc", or pastes a video link or file and wants clips.
 ---
 
 # clipper
@@ -9,7 +9,7 @@ Long video in, post-ready clip pack out. Built for the Eli Ben-Sasson clip packs
 
 ```
 source (url or file)
-  -> fetch.sh        download to <work>/source.mp4
+  -> fetch.py        download to <work>/source.mp4
   -> transcribe.py   full.wav, segments.json, transcript.txt
   -> YOU             read the transcript, write plan.json (clips + captions)
   -> cut.py          clips/*.mp4 (and full_episode.mp4)
@@ -25,20 +25,28 @@ source (url or file)
 ## 0. setup (once per machine)
 
 ```bash
-PY=$(S/setup.sh)          # prints a python with mlx-whisper; reuses ~/liveclip/.venv if present
+PY=$(python3 S/setup.py)  # prints a python with the whisper backend; reuses ~/liveclip/.venv if present
 ```
 
-Needs `ffmpeg`, `yt-dlp` (brew), `gcloud` (for Drive), Apple Silicon (MLX). The whisper model is `mlx-community/whisper-large-v3-turbo` (downloads on first run, about 1.6 GB).
+Needs `ffmpeg`, `yt-dlp`, and `gcloud` for Drive. The whisper backend depends on the machine:
+
+- Apple Silicon: MLX Whisper, `mlx-community/whisper-large-v3-turbo`.
+- Windows, Linux, Intel Mac: faster-whisper, `large-v3-turbo`. It uses an NVIDIA GPU when one is available (on Windows, setup.py installs the CUDA 12 cuBLAS and cuDNN 9 wheels), otherwise the CPU (int8, slower but fine for a single episode).
+- Overrides: `CLIPPER_BACKEND=mlx|faster-whisper`, `CLIPPER_DEVICE=cpu|cuda`, `CLIPPER_MODEL=<faster-whisper model>`.
+
+The model downloads on first run (about 1.6 GB).
+
+On Windows, run the same steps from PowerShell: `$PY = python S/setup.py`, then `& $PY -I S/transcribe.py <work>` and so on. Use `python` wherever this file says `python3`.
 
 ## 1. fetch
 
 ```bash
-S/fetch.sh "<url or path>" ~/liveclip/<slug>
+python3 -I S/fetch.py "<url or path>" ~/liveclip/<slug>
 ```
 
-- Local file: symlinked as `source.<ext>`, nothing copied.
+- Local file: symlinked as `source.<ext>`, nothing copied. Where symlinks are not allowed (Windows without Developer Mode) it is hard-linked, or used in place from `source_ref.txt` if it sits on another drive.
 - URL: yt-dlp, best mp4. If X or YouTube wants a login, rerun with `CLIPPER_COOKIES=chrome`.
-- X live broadcasts: the replay URL (`x.com/i/broadcasts/...`) works once the stream ends. For a stream that is still live, use `S/live/liveclip <url>` (rolling 20 min buffer into `~/liveclip/buf`) and `S/live/clip <seconds>` to grab the last N seconds.
+- X live broadcasts: the replay URL (`x.com/i/broadcasts/...`) works once the stream ends. For a stream that is still live (macOS only for now), use `S/live/liveclip <url>` (rolling 20 min buffer into `~/liveclip/buf`) and `S/live/clip <seconds>` to grab the last N seconds.
 - Prints duration, resolution and size. Sanity check it is the right video.
 
 ## 2. transcribe

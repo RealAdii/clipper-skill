@@ -29,6 +29,10 @@ for c in p["clips"]:
 frames = sorted(glob.glob(os.path.join(chk, "*_[ab].jpg")))
 if frames:
     rows = math.ceil(len(frames) / 4)
-    ff("-pattern_type", "glob", "-i", os.path.join(chk, "*_[ab].jpg"), "-vf", f"scale=320:-2,tile=4x{rows}",
+    # concat list rather than -pattern_type glob, which Windows builds of ffmpeg do not support
+    lst = os.path.join(chk, "frames.txt")
+    with open(lst, "w", encoding="utf-8") as f:
+        f.writelines("file '{}'\n".format(x.replace("\\", "/").replace("'", "'\\''")) for x in frames)
+    ff("-f", "concat", "-safe", "0", "-i", lst, "-vf", f"scale=320:-2,tile=4x{rows}",
        "-frames:v", "1", os.path.join(chk, "contact.jpg"))
     print("contact sheet:", os.path.join(chk, "contact.jpg"), "(pairs: first frame, last frame)")

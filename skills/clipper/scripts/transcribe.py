@@ -18,8 +18,8 @@ for s in segs:
         continue
     out.append(s)
 segs = out
-json.dump(segs, open(os.path.join(w, "segments.json"), "w"), indent=0)
-with open(os.path.join(w, "transcript.txt"), "w") as f:
+json.dump(segs, open(os.path.join(w, "segments.json"), "w", encoding="utf-8"), indent=0)
+with open(os.path.join(w, "transcript.txt"), "w", encoding="utf-8") as f:
     for s in segs:
         f.write(f"[{mmss(s['start'])} {s['start']:.1f}-{s['end']:.1f}] {s['text']}\n")
 print(f"{len(segs)} segments, {mmss(segs[-1]['end']) if segs else '0:00'} of speech -> {w}/transcript.txt")
